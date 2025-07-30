@@ -3,12 +3,12 @@ import torch
 from tqdm.auto import tqdm
 
 from src.datasets.base_dataset import BaseDataset
-from src.utils.io_utils import ROOT_PATH, read_json, write_json, read_txt
+from src.utils.io_utils import ROOT_PATH, read_json, write_json
 
 
 class ASVspoof(BaseDataset):
     def __init__(
-        self, name = "train", trial_file = "ASVspoof2019.LA.cm.train.trn.txt", audio = None, *args, **kwargs
+        self, name="train", trial_file="ASVspoof2019.LA.cm.train.trn.txt", audio=None, *args, **kwargs
     ):
         """
         Args:
@@ -30,18 +30,20 @@ class ASVspoof(BaseDataset):
     def _create_index(self, trial_file, index_path):
         index = []
         data_path = ROOT_PATH / "data" / "ASVspoof2019_LA" / trial_file
-        data = read_txt(str(data_path))
+        with open(data_path, "r") as f:
+            for line in tqdm(f):
+                parts = line.strip().split()
+                if len(parts) < 5:
+                    continue
+                file_id = parts[1]
+                label = 1 if parts[-1].lower() == "bonafide" else 0
+                audio_path = self.audio / f"{file_id}.flac"
+                index.append({"path": str(audio_path), "label": label})
 
-        for i in tqdm(data):
-            splited = i.strip().split()
-            id, label = splited[0], int(splited[-1]=="bonafide")
-            index.append({"path": str(self.audio / f"{id}.flac"), "label": label})
-
-        # write index to disk
         write_json(index, index_path)
 
         return index
-        
+
     def load_object(self, path):
         waveform, sample_rate = torchaudio.load(path)
         stft = torch.stft(
