@@ -1,12 +1,11 @@
 import torchaudio
 import torch
 from tqdm.auto import tqdm
-
 from src.datasets.base_dataset import BaseDataset
 from src.utils.io_utils import ROOT_PATH, read_json, write_json
 
 
-class ASVspoof(BaseDataset):
+class ASVspoofDataset(BaseDataset):
     def __init__(
         self, name="train", trial_file="ASVspoof2019.LA.cm.train.trn.txt", audio=None, *args, **kwargs
     ):
@@ -29,7 +28,7 @@ class ASVspoof(BaseDataset):
 
     def _create_index(self, trial_file, index_path):
         index = []
-        data_path = ROOT_PATH / "data" / "ASVspoof2019_LA" / trial_file
+        data_path = ROOT_PATH / "data" / "ASVspoof2019_LA" / "train" / trial_file
         with open(data_path, "r") as f:
             for line in tqdm(f):
                 parts = line.strip().split()
