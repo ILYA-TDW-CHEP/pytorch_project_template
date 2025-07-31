@@ -30,7 +30,7 @@ def compute_det_curve(target_scores, nontarget_scores):
 
 
 class EERMetric(BaseMetric):
-    def __init__(self, metric, device, *args, **kwargs):
+    def __init__(self, device, *args, **kwargs):
         """
         Example of a nested metric class. Applies metric function
         object (for example, from TorchMetrics) on tensors.
@@ -45,7 +45,6 @@ class EERMetric(BaseMetric):
         super().__init__(*args, **kwargs)
         if device == "auto":
             device = "cuda" if torch.cuda.is_available() else "cpu"
-        self.metric = metric.to(device)
 
     def __call__(self, logits: torch.Tensor, labels: torch.Tensor, **kwargs):
         """

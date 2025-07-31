@@ -10,21 +10,20 @@ optimizer:
   _target_: torch.optim.Adam
   lr: 3e-4
 lr_scheduler:
-  _target_: torch.optim.lr_scheduler.StepLR
-  gamma: 0.9
-  step_size: ${trainer.epoch_len}
+  _target_: torch.optim.lr_scheduler.CosineAnnealingLR
+  T_max: 5
 loss_function:
   _target_: src.loss.CrossEntropy.CrossEntropyLoss
 trainer:
   log_step: 5
   n_epochs: 5
-  epoch_len: 1
+  epoch_len: 1586
   device_tensors: ["data_object", "labels"] # which tensors should be on device (ex. GPU)
   resume_from: null # null or path to the checkpoint dir with *.pth and config.yaml
   device: auto # device name or "auto"
   override: True # if True, will override the previous run with the same name
-  monitor: "max test_MulticlassAccuracy" # "off" or "max/min metric_name", i.e. our goal is to maximize/minimize metric
+  monitor: "min Test_EER" # "off" or "max/min metric_name", i.e. our goal is to maximize/minimize metric
   save_period: 5 # checkpoint each save_period epochs in addition to the best epoch
   early_stop: ${trainer.n_epochs} # epochs for early stopping
   save_dir: "saved"
-  seed: 1
+  seed: 1984

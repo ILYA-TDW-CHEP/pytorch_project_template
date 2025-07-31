@@ -2,7 +2,8 @@ device: "auto"
 train: # metrics that are calculated during training
   - _target_: src.metrics.EER.EERMetric
     device: ${metrics.device}
-    name: "TRAIN_EER" # just an example to see difference
+    name: "TRAIN_EER"
 inference: # metrics that are calculated during inference (eval)
   - _target_: src.metrics.EER.EERMetric
     name: "Test_EER"
+    device: ${metrics.device}
