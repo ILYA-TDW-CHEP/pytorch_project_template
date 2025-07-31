@@ -31,39 +31,46 @@ class BaselineModel(nn.Module):
         """
         super().__init__()
         self.ConvPart = Sequential(
-            nn.Conv2d(in_channels=1, out_channels=64, kernel_size=5, stride=1),     # Layer 1
-            MFM(),                                                                             # Layer 2
-            nn.MaxPool2d(kernel_size=2, stride=2),                                             # Layer 3
-            nn.Dropout2d(p=0.5), 
-            nn.Conv2d(in_channels=32, out_channels=64, kernel_size=1, stride=1),               # Layer 4
-            MFM(),                                                                             # Layer 5
-            nn.BatchNorm2d(32),                                                                # Layer 6
+            nn.Conv2d(in_channels=1, out_channels=64, kernel_size=5, stride=1),                 # Layer 1
+            MFM(),                                                                              # Layer 2
+            nn.MaxPool2d(kernel_size=2, stride=2),                                              # Layer 3
             nn.Dropout2d(p=0.5),
-            nn.Conv2d(in_channels=32, out_channels=96, kernel_size=3, stride=1, padding=1),               # Layer 7
-            MFM(),                                                                             # Layer 8
 
-            nn.MaxPool2d(kernel_size=2, stride=2),                                             # Layer 9
-            nn.BatchNorm2d(48),                                                                # Layer 10
+            nn.Conv2d(in_channels=32, out_channels=64, kernel_size=1, stride=1),                # Layer 4
+            MFM(),                                                                              # Layer 5
+            nn.BatchNorm2d(32),                                                                 # Layer 6
             nn.Dropout2d(p=0.5),
-            nn.Conv2d(in_channels=48, out_channels=96, kernel_size=1, stride=1),               # Layer 11
-            MFM(),                                                                             # Layer 12
-            nn.BatchNorm2d(48),                                                                # Layer 13
-            nn.Conv2d(in_channels=48, out_channels=128, kernel_size=3, stride=1, padding=1),              # Layer 14
-            MFM(),                                                                             # Layer 15
-            nn.MaxPool2d(kernel_size=2, stride=2),                                             # Layer 16
-            nn.Dropout2d(p=0.5), 
-            nn.Conv2d(in_channels=64, out_channels=128, kernel_size=1, stride=1),              # Layer 17
-            MFM(),                                                                             # Layer 18
-            nn.BatchNorm2d(64),                                                                # Layer 19
-            nn.Conv2d(in_channels=64, out_channels=64, kernel_size=3, stride=1, padding=1),               # Layer 20
-            MFM(),                                                                             # Layer 21
-            nn.BatchNorm2d(32),                                                                # Layer 22
-            nn.Conv2d(in_channels=32, out_channels=64, kernel_size=1, stride=1),               # Layer 23
-            MFM(),                                                                             # Layer 24
-            nn.BatchNorm2d(32),                                                                # Layer 25
-            nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, stride=1, padding=1),               # Layer 26
-            MFM(),                                                                             # Layer 27
-            nn.MaxPool2d(kernel_size=2, stride=2),                                             # Layer 28
+
+            nn.Conv2d(in_channels=32, out_channels=96, kernel_size=3, stride=1, padding=1),     # Layer 7
+            MFM(),                                                                              # Layer 8
+            nn.MaxPool2d(kernel_size=2, stride=2),                                              # Layer 9
+            nn.BatchNorm2d(48),                                                                 # Layer 10
+            nn.Dropout2d(p=0.5),
+
+            nn.Conv2d(in_channels=48, out_channels=96, kernel_size=1, stride=1),                # Layer 11
+            MFM(),                                                                              # Layer 12
+            nn.BatchNorm2d(48),                                                                 # Layer 13
+
+            nn.Conv2d(in_channels=48, out_channels=128, kernel_size=3, stride=1, padding=1),    # Layer 14
+            MFM(),                                                                              # Layer 15
+            nn.MaxPool2d(kernel_size=2, stride=2),                                              # Layer 16
+            nn.Dropout2d(p=0.5),
+
+            nn.Conv2d(in_channels=64, out_channels=128, kernel_size=1, stride=1),               # Layer 17
+            MFM(),                                                                              # Layer 18
+            nn.BatchNorm2d(64),                                                                 # Layer 19
+
+            nn.Conv2d(in_channels=64, out_channels=64, kernel_size=3, stride=1, padding=1),     # Layer 20
+            MFM(),                                                                              # Layer 21
+            nn.BatchNorm2d(32),                                                                 # Layer 22
+
+            nn.Conv2d(in_channels=32, out_channels=64, kernel_size=1, stride=1),                # Layer 23
+            MFM(),                                                                              # Layer 24
+            nn.BatchNorm2d(32),                                                                 # Layer 25
+            
+            nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, stride=1, padding=1),     # Layer 26
+            MFM(),                                                                              # Layer 27
+            nn.MaxPool2d(kernel_size=2, stride=2),                                              # Layer 28
             nn.Dropout2d(p=0.5),
         )
 

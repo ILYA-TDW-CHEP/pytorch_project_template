@@ -34,7 +34,6 @@ class Trainer(BaseTrainer):
             metric_funcs = self.metrics["train"]
             self.optimizer.zero_grad()
         outputs = self.model(**batch)
-        print("FOrward step done")
         batch.update(outputs)
 
         all_losses = self.criterion(**batch)
@@ -44,7 +43,6 @@ class Trainer(BaseTrainer):
             batch["loss"].backward()  # sum of all losses is always called loss
             self._clip_grad_norm()
             self.optimizer.step()
-            print("Backward step done")
             if self.lr_scheduler is not None:
                 self.lr_scheduler.step()
 
@@ -70,11 +68,6 @@ class Trainer(BaseTrainer):
         """
         # method to log data from you batch
         # such as audio, text or images, for example
-        # waveform = batch["data_object"][0]  # (C, T)
-        # self.writer.add_audio("audio", waveform, sample_rate=16000)
-        # spec = batch["features"][0].detach().cpu().squeeze()
-        # image = self._wandb_spectrogram_image(spec)
-        # self.writer.add_image("spectrogram", image)
 
         # logging scheme might be different for different partitions
         if mode == "train":  # the method is called only every self.log_step steps
@@ -83,23 +76,4 @@ class Trainer(BaseTrainer):
         else:
             # Log Stuff
             pass
-    
-    def _wandb_spectrogram_image(self, spec_tensor):
-        """
-        Converts a spectrogram tensor into an RGB image for WandB logging.
-        """
-        import matplotlib.pyplot as plt
-        from io import BytesIO
-        from PIL import Image
-        import numpy as np
-
-        fig, ax = plt.subplots(figsize=(6, 3))
-        ax.imshow(spec_tensor, origin='lower', aspect='auto', cmap='viridis')
-        ax.axis("off")
-
-        buf = BytesIO()
-        plt.savefig(buf, format='png', bbox_inches='tight', pad_inches=0)
-        plt.close(fig)
-        buf.seek(0)
-        image = Image.open(buf).convert("RGB")
-        return np.array(image)
+        

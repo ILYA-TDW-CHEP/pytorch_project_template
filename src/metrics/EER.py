@@ -59,11 +59,10 @@ class EERMetric(BaseMetric):
         """
         if logits.dim() == 2 and logits.size(1) == 2:
             logits = torch.softmax(logits, dim=1)[:, 1]
-            
+
         logits = logits.detach().cpu().numpy().squeeze()
         labels = labels.detach().cpu().numpy().squeeze()
 
-        # Разделяем на таргет и нетаргет
         target_scores = logits[labels == 1]
         nontarget_scores = logits[labels == 0]
 

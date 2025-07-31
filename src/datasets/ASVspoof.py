@@ -15,7 +15,7 @@ class ASVspoofDataset(BaseDataset):
             audio (Path | str): root path to audio files (.flac)
             name (str): partition name
         """
-
+        self.name = name
         index_path = ROOT_PATH / "data" / "ASVspoof2019_LA" / name / "index.json"
         self.audio = ROOT_PATH / "data" / "ASVspoof2019_LA" / f"{name}/flac"
 
