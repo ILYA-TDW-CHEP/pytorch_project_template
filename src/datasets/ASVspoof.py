@@ -44,7 +44,7 @@ class ASVspoofDataset(BaseDataset):
         return index
 
     def load_object(self, path):
-        trupath = ROOT_PATH / "data" / "ASVspoof2019_LA" / "train" / "flac" / path
+        trupath = ROOT_PATH / "data" / "ASVspoof2019_LA" / self.name / "flac" / path
         waveform, sample_rate = torchaudio.load(trupath)
         stft = torch.stft(
             input=waveform,
