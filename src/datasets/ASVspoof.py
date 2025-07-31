@@ -28,7 +28,7 @@ class ASVspoofDataset(BaseDataset):
 
     def _create_index(self, trial_file, index_path):
         index = []
-        data_path = ROOT_PATH / "data" / "ASVspoof2019_LA" / "train" / trial_file
+        data_path = ROOT_PATH / "data" / "ASVspoof2019_LA" / self.name / trial_file
         with open(data_path, "r") as f:
             for line in tqdm(f):
                 parts = line.strip().split()
@@ -44,21 +44,26 @@ class ASVspoofDataset(BaseDataset):
         return index
 
     def load_object(self, path):
-        waveform, sample_rate = torchaudio.load(path)
+        trupath = ROOT_PATH / "data" / "ASVspoof2019_LA" / "train" / "flac" / path
+        waveform, sample_rate = torchaudio.load(trupath)
         stft = torch.stft(
-            waveform,
-            pad=0,
-            window=torch.hann_window(400),
+            input=waveform,
             n_fft=1732,
             hop_length=160,
             win_length=400,
-            power=2.0,
+            window=torch.hann_window(400, device=waveform.device),
+            return_complex=True
         )
-        magnitude = stft.sqrt().mean(dim=0, keepdim=True)
+        magnitude = stft.abs()
+        if magnitude.ndim == 3:
+            magnitude = magnitude.mean(dim=0, keepdim=True)
+            magnitude = magnitude.unsqueeze(0)
 
-        if magnitude.shape[3] < 600:
-            pad_time = 600 - magnitude.shape[3]
-            magnitude = torch.nn.functional.pad(magnitude, (0, pad_time, 0, 0))
-        elif magnitude.shape[3] > 600:
-            magnitude = magnitude[:, :, :600]
+        desired_H, desired_W = 867, 604
+        H, W = magnitude.shape[-2], magnitude.shape[-1]
+        pad_H = max(0, desired_H - H)
+        pad_W = max(0, desired_W - W)
+
+        magnitude = torch.nn.functional.pad(magnitude, (0, pad_W, 0, pad_H))  # (left, right, top, bottom)
+        magnitude = magnitude[:, :, :desired_H, :desired_W]
         return magnitude

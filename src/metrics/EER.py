@@ -57,7 +57,17 @@ class EERMetric(BaseMetric):
         Returns:
             metric (float): calculated metric.
         """
-        frr, far, thresholds = compute_det_curve(logits, labels)
+        if logits.dim() == 2 and logits.size(1) == 2:
+            logits = torch.softmax(logits, dim=1)[:, 1]
+            
+        logits = logits.detach().cpu().numpy().squeeze()
+        labels = labels.detach().cpu().numpy().squeeze()
+
+        # Разделяем на таргет и нетаргет
+        target_scores = logits[labels == 1]
+        nontarget_scores = logits[labels == 0]
+
+        frr, far, thresholds = compute_det_curve(target_scores, nontarget_scores)
         abs_diffs = np.abs(frr - far)
         min_index = np.argmin(abs_diffs)
         eer = np.mean((frr[min_index], far[min_index]))

@@ -15,11 +15,10 @@ def collate_fn(dataset_items: list[dict]):
     """
 
     result_batch = {}
+    data_objects = [item["data_object"] for item in dataset_items]  # [B, 1, 1, H, W]
+    
+    # Не pad_sequence, а просто stack
+    result_batch["data_object"] = torch.stack(data_objects)  # [B, 1, 1, H, W]
 
-    # example of collate_fn
-    result_batch["data_object"] = torch.vstack(
-        [elem["data_object"] for elem in dataset_items]
-    )
-    result_batch["labels"] = torch.tensor([elem["labels"] for elem in dataset_items])
-
+    result_batch["labels"] = torch.tensor([item["labels"] for item in dataset_items])
     return result_batch
