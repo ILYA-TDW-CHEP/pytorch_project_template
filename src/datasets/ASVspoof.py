@@ -46,24 +46,23 @@ class ASVspoofDataset(BaseDataset):
     def load_object(self, path):
         trupath = ROOT_PATH / "data" / "ASVspoof2019_LA" / self.name / "flac" / path
         waveform, sample_rate = torchaudio.load(trupath)
-        stft = torch.stft(
-            input=waveform,
+        stft_transform = torchaudio.transforms.Spectrogram(
             n_fft=1732,
-            hop_length=160,
-            win_length=400,
-            window=torch.hann_window(400, device=waveform.device),
-            return_complex=True
+            hop_length=256,
+            win_length=512,
+            power=None,
+            normalized=False
         )
-        magnitude = stft.abs()
+        magnitude = stft_transform(waveform).abs()
         if magnitude.ndim == 3:
             magnitude = magnitude.mean(dim=0, keepdim=True)
             magnitude = magnitude.unsqueeze(0)
 
-        desired_H, desired_W = 867, 604
+        goal_H, goal_W = 867, 604
         H, W = magnitude.shape[-2], magnitude.shape[-1]
-        pad_H = max(0, desired_H - H)
-        pad_W = max(0, desired_W - W)
+        pad_H = max(0, goal_H - H)
+        pad_W = max(0, goal_W - W)
 
-        magnitude = torch.nn.functional.pad(magnitude, (0, pad_W, 0, pad_H))  # (left, right, top, bottom)
-        magnitude = magnitude[:, :, :desired_H, :desired_W]
+        magnitude = torch.nn.functional.pad(magnitude, (0, pad_W, 0, pad_H))
+        magnitude = magnitude[:, :, :goal_H, :goal_W]
         return magnitude
